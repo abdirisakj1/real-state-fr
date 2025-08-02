@@ -15,7 +15,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 
 const Dashboard = () => {
-  const { user, api } = useAuth();
+  const { user, api, dashboardRefreshToken } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
@@ -23,7 +23,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+    // Re-fetch dashboard stats whenever dashboardRefreshToken changes
+  }, [dashboardRefreshToken]);
 
   const fetchDashboardData = async () => {
     try {
@@ -41,7 +42,7 @@ const Dashboard = () => {
         ]);
         
         // Fetch all completed and pending payments for all-time stats
-        const allPaymentsRes = await api.get('https://real-state-bk.onrender.com/api/payments?limit=10000');
+        const allPaymentsRes = await api.get('/https://real-state-bk.onrender.com/apipayments?limit=10000');
         const allPayments = allPaymentsRes.data.payments || [];
         // Match Reports page: sum all payments, regardless of status
         const allTimeIncome = allPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
