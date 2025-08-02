@@ -7,6 +7,11 @@ const AuthContext = createContext();
 // Auth reducer
 const authReducer = (state, action) => {
   switch (action.type) {
+    case 'TRIGGER_DASHBOARD_REFRESH':
+      return {
+        ...state,
+        dashboardRefreshToken: state.dashboardRefreshToken + 1
+      };
     case 'LOGIN_START':
       return {
         ...state,
@@ -58,6 +63,7 @@ const authReducer = (state, action) => {
 // Initial state
 const initialState = {
   user: null,
+  dashboardRefreshToken: 0,
   token: localStorage.getItem('token'),
   isAuthenticated: false,
   loading: true,
@@ -223,12 +229,16 @@ export const AuthProvider = ({ children }) => {
   // Get test user credentials
   const getTestUsers = async () => {
     try {
-      const response = await api.get('https://real-state-bk.onrender.com/api/auth/test-users');
+      const response = await api.get('/https://real-state-bk.onrender.com/apiauth/test-users');
       return response.data.users;
     } catch (error) {
       console.error('Error fetching test users:', error);
       return [];
     }
+  };
+
+  const triggerDashboardRefresh = () => {
+    dispatch({ type: 'TRIGGER_DASHBOARD_REFRESH' });
   };
 
   const value = {
@@ -238,7 +248,9 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     changePassword,
     getTestUsers,
-    api // Export api instance for use in other components
+    api, // Export api instance for use in other components
+    dashboardRefreshToken: state.dashboardRefreshToken,
+    triggerDashboardRefresh
   };
 
   return (
