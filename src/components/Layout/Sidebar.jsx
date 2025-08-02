@@ -113,7 +113,7 @@ const Sidebar = () => {
               <FiGrid className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold text-gray-900 dark:text-white">
-              RentPro
+              HooyRent
             </span>
           </motion.div>
         )}
