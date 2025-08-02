@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropertyStats from './PropertyStats';
+import { getMaintenanceCountsByProperty } from '../../utils/maintenanceCounts';
 import PropertyList from './PropertyList';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
@@ -16,6 +17,7 @@ const Properties = () => {
   };
   const { user, api } = useAuth();
   const [properties, setProperties] = useState([]);
+  const [maintenanceRequests, setMaintenanceRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -24,7 +26,17 @@ const Properties = () => {
 
   useEffect(() => {
     fetchProperties();
+    fetchMaintenanceRequests();
   }, []);
+
+  const fetchMaintenanceRequests = async () => {
+    try {
+      const response = await api.get('https://real-state-bk.onrender.com/api/maintenance?limit=1000');
+      setMaintenanceRequests(response.data.maintenanceRequests || []);
+    } catch (error) {
+      toast.error('Failed to fetch maintenance requests');
+    }
+  };
 
   const fetchProperties = async () => {
     try {
@@ -70,9 +82,11 @@ const Properties = () => {
     }
   };
 
+  const maintenanceCounts = getMaintenanceCountsByProperty(maintenanceRequests);
+
   return (
     <div className="space-y-6">
-      <PropertyStats properties={properties} />
+      <PropertyStats properties={properties} maintenanceCounts={maintenanceCounts} />
       <div className="flex justify-end">
         <Link to="/add-property" className="btn-primary">Add New Property</Link>
       </div>
