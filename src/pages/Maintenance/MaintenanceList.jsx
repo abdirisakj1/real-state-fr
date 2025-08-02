@@ -21,50 +21,63 @@ function MaintenanceList({ requests = [], loading, onEdit, onDelete }) {
   if (!requests.length) return <div className="text-center py-8 text-gray-500">No maintenance requests found.</div>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {requests.map((req) => (
-        <div key={req._id} className="bg-white dark:bg-gray-900 rounded-lg shadow p-4 flex flex-col">
-          {/* Icon and Title */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-indigo-500 text-2xl">
-              <FiTool />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{req.title}</h3>
-              <div className="text-gray-500 dark:text-gray-400 text-sm capitalize">{req.category}</div>
-            </div>
-          </div>
-          <div className="mb-2 text-gray-500 dark:text-gray-400 flex items-center gap-2">
-            <span className="font-medium text-gray-700 dark:text-gray-200">Property:</span> {req.property?.title || req.property?._id || req.property || '-'}
-          </div>
-          <div className="mb-2 flex flex-wrap gap-2">
-            <span className={`px-2 py-1 rounded text-xs font-semibold ${priorityColors[req.priority] || ''}`}>{req.priority}</span>
-            <span className={`px-2 py-1 rounded text-xs font-semibold ${statusColors[req.status] || ''}`}>{req.status.replace('_', ' ')}</span>
-          </div>
-          <div className="mb-2 text-gray-500 dark:text-gray-400 flex items-center gap-2">
-            <span className="font-medium text-gray-700 dark:text-gray-200">Requested By:</span> {req.requestedBy?.name || req.requestedBy?._id || req.requestedBy || '-'}
-          </div>
-          <div className="mb-2 text-gray-500 dark:text-gray-400 flex items-center gap-2">
-            <span className="font-medium text-gray-700 dark:text-gray-200">Created:</span> {new Date(req.createdAt).toLocaleString()}
-          </div>
-          <div className="flex gap-2 mt-auto">
-            <button
-              className="px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors flex items-center gap-1"
-              onClick={() => onEdit && onEdit(req)}
-              type="button"
-            >
-              <FiEdit /> Edit
-            </button>
-            <button
-              className="px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors flex items-center gap-1"
-              onClick={() => onDelete && onDelete(req._id)}
-              type="button"
-            >
-              <FiTrash2 /> Delete
-            </button>
-          </div>
-        </div>
-      ))}
+    <div className="overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead className="bg-gray-50 dark:bg-gray-800">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Request</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Property</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Category</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Priority</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+          {requests.map((req) => (
+            <tr key={req._id}>
+              <td className="px-6 py-4 whitespace-nowrap flex items-center gap-2">
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 text-indigo-500"><FiTool /></span>
+                <div>
+                  <div className="font-bold text-gray-900 dark:text-white">{req.title}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">{req.description}</div>
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-gray-900 dark:text-white font-medium">{req.property?.title || req.property?._id || req.property || '-'}</div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">{req.property?.address?.street}, {req.property?.address?.city}</div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap capitalize">{req.category}</td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`px-2 py-1 rounded text-xs font-semibold ${priorityColors[req.priority] || ''}`}>{req.priority}</span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`px-2 py-1 rounded text-xs font-semibold ${statusColors[req.status] || ''}`}>{req.status.replace('_', ' ')}</span>
+              </td>
+
+              <td className="px-6 py-4 whitespace-nowrap text-center">
+                <button
+                  className="inline-flex items-center px-2 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors mr-2"
+                  onClick={() => onEdit && onEdit(req)}
+                  type="button"
+                  title="Edit"
+                >
+                  <FiEdit />
+                </button>
+                <button
+                  className="inline-flex items-center px-2 py-1 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
+                  onClick={() => onDelete && onDelete(req._id)}
+                  type="button"
+                  title="Delete"
+                >
+                  <FiTrash2 />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
