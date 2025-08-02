@@ -5,7 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 
 const Maintenance = () => {
-  const { user, api } = useAuth();
+  const { user, api, triggerDashboardRefresh } = useAuth();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState([]);
@@ -39,7 +39,7 @@ const Maintenance = () => {
   const fetchProperties = async () => {
     setLoading(true);
     try {
-      const res = await api.get('https://real-state-bk.onrender.com/api/properties');
+      const res = await api.get('/https://real-state-bk.onrender.com/apiproperties');
       setProperties(res.data.properties || []);
     } catch (err) {
       toast.error('Failed to fetch properties');
@@ -57,9 +57,10 @@ const Maintenance = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this maintenance request?')) return;
     try {
-      await api.delete(`https://real-state-bk.onrender.com/api/properties/maintenance/${id}`);
+      await api.delete(`https://real-state-bk.onrender.com/api/maintenance/${id}`);
       toast.success('Maintenance request deleted');
       fetchRequests();
+      triggerDashboardRefresh();
     } catch (err) {
       toast.error('Failed to delete maintenance request');
     }
@@ -69,6 +70,7 @@ const Maintenance = () => {
   const handleRequestSubmitted = () => {
     setEditingRequest(null);
     fetchRequests();
+    triggerDashboardRefresh();
   };
 
   return (
