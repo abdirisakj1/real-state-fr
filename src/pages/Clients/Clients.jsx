@@ -41,8 +41,8 @@ const Clients = () => {
   const fetchClients = async () => {
     try {
       setLoading(true);
-      // No mock data; show empty list if no API
-      setClients([]);
+      const response = await api.get('https://real-state-bk.onrender.com/api/clients');
+      setClients(response.data.clients || []);
     } catch (error) {
       console.error('Error fetching clients:', error);
       toast.error('Failed to fetch clients');
@@ -88,23 +88,16 @@ const Clients = () => {
       };
 
       if (editingClient) {
-        // Update existing client
-        const updatedClients = clients.map(client => 
-          client._id === editingClient._id ? { ...clientData, _id: editingClient._id } : client
-        );
-        setClients(updatedClients);
+        // Update existing client in backend
+        await api.put(`https://real-state-bk.onrender.com/api/clients/${editingClient._id}`, clientData);
         toast.success('Client updated successfully!');
       } else {
-        // Add new client
-        const newClient = {
-          ...clientData,
-          _id: Date.now().toString(),
-          createdAt: new Date()
-        };
-        setClients(prev => [...prev, newClient]);
+        // Add new client to backend
+        await api.post('https://real-state-bk.onrender.com/api/clients', clientData);
         toast.success('Client added successfully!');
       }
       
+      fetchClients();
       resetForm();
     } catch (error) {
       console.error('Error saving client:', error);
@@ -140,10 +133,15 @@ const Clients = () => {
     setShowAddModal(true);
   };
 
-  const handleDelete = (clientId) => {
+  const handleDelete = async (clientId) => {
     if (window.confirm('Are you sure you want to delete this client?')) {
-      setClients(prev => prev.filter(client => client._id !== clientId));
-      toast.success('Client deleted successfully!');
+      try {
+        await api.delete(`https://real-state-bk.onrender.com/api/clients/${clientId}`);
+        toast.success('Client deleted successfully!');
+        fetchClients();
+      } catch (error) {
+        toast.error('Failed to delete client');
+      }
     }
   };
 
