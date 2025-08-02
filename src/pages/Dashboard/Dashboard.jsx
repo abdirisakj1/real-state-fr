@@ -42,7 +42,7 @@ const Dashboard = () => {
         ]);
         
         // Fetch all completed and pending payments for all-time stats
-        const allPaymentsRes = await api.get('/https://real-state-bk.onrender.com/apipayments?limit=10000');
+        const allPaymentsRes = await api.get('https://real-state-bk.onrender.com/api/payments?limit=10000');
         const allPayments = allPaymentsRes.data.payments || [];
         // Match Reports page: sum all payments, regardless of status
         const allTimeIncome = allPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
