@@ -10,19 +10,7 @@ const Login = () => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [testUsers, setTestUsers] = useState([]);
-  const [showTestUsers, setShowTestUsers] = useState(false);
-  
-  const { login, loading, getTestUsers } = useAuth();
-
-  // Load test users on component mount
-  useEffect(() => {
-    const loadTestUsers = async () => {
-      const users = await getTestUsers();
-      setTestUsers(users);
-    };
-    loadTestUsers();
-  }, [getTestUsers]);
+  const { login, loading } = useAuth();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -48,26 +36,9 @@ const Login = () => {
     }
   };
 
-  const handleTestUserLogin = (user) => {
-    setFormData({
-      email: user.email,
-      password: user.password
-    });
-    setShowTestUsers(false);
-  };
 
-  const getRoleColor = (role) => {
-    switch (role) {
-      case 'admin':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      case 'property_manager':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'tenant':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-    }
-  };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
@@ -156,55 +127,6 @@ const Login = () => {
                 )}
               </motion.button>
             </form>
-
-            {/* Test Users Section */}
-            <div className="mt-8">
-              <button
-                onClick={() => setShowTestUsers(!showTestUsers)}
-                className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-              >
-                <FiInfo className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  {showTestUsers ? 'Hide' : 'Show'} Test Accounts
-                </span>
-              </button>
-
-              {showTestUsers && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mt-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
-                >
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                    Click on any test account to auto-fill the login form:
-                  </p>
-                  <div className="space-y-2">
-                    {testUsers.map((user, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleTestUserLogin(user)}
-                        className="w-full text-left p-3 bg-white dark:bg-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 transition-colors border border-gray-200 dark:border-gray-500"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium text-gray-900 dark:text-white">
-                              {user.name}
-                            </p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              {user.email}
-                            </p>
-                          </div>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(user.role)}`}>
-                            {user.role.replace('_', ' ').toUpperCase()}
-                          </span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </div>
           </motion.div>
         </div>
 
@@ -240,7 +162,7 @@ const Login = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-2">Tenant Portal</h3>
                   <p className="text-blue-100">
-                    Provide tenants with a dedicated portal to view payments, submit requests, and manage their lease.
+                   Register tenants quickly and easily using this Project
                   </p>
                 </div>
               </div>
@@ -258,12 +180,7 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="mt-12 p-6 bg-blue-700/50 rounded-xl">
-              <p className="text-sm text-blue-100 mb-2">💡 Pro Tip</p>
-              <p className="text-blue-50">
-                Use the test accounts above to explore different user roles and features available in the system.
-              </p>
-            </div>
+
           </motion.div>
         </div>
       </div>
