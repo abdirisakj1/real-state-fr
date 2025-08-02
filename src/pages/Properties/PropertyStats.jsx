@@ -1,12 +1,13 @@
 import React from 'react';
 import { FiHome } from 'react-icons/fi';
 
-const PropertyStats = ({ properties }) => {
+const PropertyStats = ({ properties, maintenanceCounts = {} }) => {
   // Example stats: total, available, occupied, maintenance
   const total = properties.length;
   const available = properties.filter(p => p.status === 'available').length;
   const occupied = properties.filter(p => p.status === 'occupied').length;
-  const maintenance = properties.filter(p => p.status === 'maintenance').length;
+  // Count all maintenance requests for all properties
+const maintenance = Object.values(maintenanceCounts).reduce((sum, c) => sum + c, 0);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
