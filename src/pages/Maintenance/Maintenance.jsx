@@ -39,7 +39,7 @@ const Maintenance = () => {
   const fetchProperties = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/https://real-state-bk.onrender.com/apiproperties');
+      const res = await api.get('https://real-state-bk.onrender.com/api/properties');
       setProperties(res.data.properties || []);
     } catch (err) {
       toast.error('Failed to fetch properties');
